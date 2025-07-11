@@ -42,7 +42,7 @@ function Login({ setLoggedIn }) {
           label="Email"
           value={formData.email}
           onChange={handleChange}
-          fullWidth
+          // fullWidth
           margin="normal"
         />
         <TextField
@@ -51,8 +51,9 @@ function Login({ setLoggedIn }) {
           type="password"
           value={formData.password}
           onChange={handleChange}
-          fullWidth
+          // fullWidth
           margin="normal"
+          required
         />
         <Button type="submit" variant="contained" color="primary">Login</Button>
       </form>
