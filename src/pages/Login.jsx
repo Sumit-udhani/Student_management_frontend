@@ -35,7 +35,7 @@ function Login({ setLoggedIn }) {
   return (
     <Box>
       <form onSubmit={handleSubmit}>
-        <Typography variant="h4" gutterBottom>Login</Typography>
+        <Typography variant="h4" gutterBottom sx={{color:'white'}}>Login</Typography>
         {error && <Alert severity="error">{error}</Alert>}
         <TextField
           name="email"
@@ -44,6 +44,8 @@ function Login({ setLoggedIn }) {
           onChange={handleChange}
           // fullWidth
           margin="normal"
+          required
+          sx={{color:'white'}}
         />
         <TextField
           name="password"
