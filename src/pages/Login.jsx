@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Alert } from '@mui/material';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInterceptor';
 import { useNavigate } from 'react-router-dom';
+
 
 function Login({ setLoggedIn }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
+ 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError('');
@@ -16,7 +17,7 @@ function Login({ setLoggedIn }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:9090/auth/login', formData);
+      const res = await axiosInstance.post('/auth/login', formData);
       const { token, userId } = res.data;
 
       localStorage.setItem('token', token);

@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import useLogout from "../hooks/useLogout";
-import axios from "axios";
+// import axios from "axios";
 import Header from "../component/UI/Header";
 import ReusableModal from "../component/UI/ReusableModal";
 import AddStudents from "../component/AddStudents";
@@ -23,7 +23,9 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import Input from "../component/UI/Input";
-
+import Pagination from '@mui/material/Pagination';
+import axiosInstance from "../utils/axiosInterceptor";
+import useAxiosWithAuth from "../utils/axiosInterceptor";
 function Dashboard({ setLoggedIn }) {
   const logout = useLogout(setLoggedIn);
   const [students, setStudent] = useState([]);
@@ -32,11 +34,14 @@ function Dashboard({ setLoggedIn }) {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [currentPage,setCurrentPage] = useState(1)
+  const [totalPages,setTotalPages] = useState(1)
+  
   const fetchStudents = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(
-        `http://localhost:9090/student/all?search=${search}`,
+      const res = await axiosInstance.get(
+        `/student/all?search=${search}&page=${currentPage}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,6 +49,7 @@ function Dashboard({ setLoggedIn }) {
         }
       );
       setStudent(res.data.students);
+      setTotalPages(res.data.totalPages)
     } catch (error) {
       console.log(error);
     }
@@ -54,7 +60,7 @@ function Dashboard({ setLoggedIn }) {
       fetchStudents();
       return () => clearTimeout(delayDebounce);
     }, 300);
-  }, [search]);
+  }, [search,currentPage]);
   const handleEdit = (student) => {
     setSelectedStudent(student);
     setEditOpen(true);
@@ -66,8 +72,8 @@ function Dashboard({ setLoggedIn }) {
       if (!confirm) {
         return;
       }
-      const res = await axios.delete(
-        `http://localhost:9090/student/delete/${id}`,
+      const res = await axiosInstance.delete(
+        `/student/delete/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -223,6 +229,28 @@ function Dashboard({ setLoggedIn }) {
           </TableBody>
         </Table>
       </TableContainer>
+      
+      <Stack direction="row" justifyContent="center" sx={{mt:3}}>
+      <Pagination
+      count={totalPages}
+      page={currentPage}
+      onChange={(e,page)=> setCurrentPage(page)}
+      color="primary"
+      size="large"
+      
+      sx={{
+        '& .MuiPaginationItem-root': {
+          color: 'white', // changes number and arrows color
+          borderColor: 'white', 
+          width:'70px'
+        },
+        '& .Mui-selected': {
+          backgroundColor: '#1E40AF', // optional: selected button background
+          color: 'red',
+        },
+      }}
+      />
+      </Stack>
       <ReusableModal
         open={viewModalOpen}
         onClose={() => setViewModalOpen(false)}

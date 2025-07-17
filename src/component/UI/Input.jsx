@@ -1,7 +1,7 @@
 import { TextField } from '@mui/material';
 import React from 'react';
 
-function Input({ label, name, value, onChange, type = 'text' ,fullWidth=false,sx = {}, ...rest }) {
+function Input({ label, name, value, onChange, type = 'text' ,required = false,fullWidth=false,sx = {}, ...rest }) {
   return (
     <TextField
       label={label}
@@ -10,7 +10,7 @@ function Input({ label, name, value, onChange, type = 'text' ,fullWidth=false,sx
       onChange={onChange}
       type={type}
       fullWidth={fullWidth}
-      required
+      required ={required}
       InputLabelProps={type === 'date' ? { shrink: true } : {}}
       sx={{
         '& .MuiOutlinedInput-root': {

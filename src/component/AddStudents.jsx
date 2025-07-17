@@ -2,8 +2,11 @@ import axios from 'axios'
 import React, { useState,useEffect } from 'react'
 import { Alert, Button, Stack } from '@mui/material';
 import Input from './UI/Input';
+
+import useAxiosWithAuth from '../utils/axiosInterceptor';
+import axiosInstance from '../utils/axiosInterceptor';
 function AddStudents({onStudentAdd,onClose,initialData={},isEditMode=false}) {
-   
+    const axios = useAxiosWithAuth()
     const[formData,setFormData] = useState({
         name: '',
             parentNo: '',
@@ -48,12 +51,12 @@ function AddStudents({onStudentAdd,onClose,initialData={},isEditMode=false}) {
   try {
     const token = localStorage.getItem('token');
     const url = isEditMode
-      ? `http://localhost:9090/student/update/${initialData.id}`
-      : 'http://localhost:9090/student/create';
+      ? `/student/update/${initialData.id}`
+      : '/student/create';
 
     const method = isEditMode ? 'put' : 'post';
 
-    const res = await axios[method](url, formData, {
+    const res = await axiosInstance[method](url, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -70,11 +73,11 @@ function AddStudents({onStudentAdd,onClose,initialData={},isEditMode=false}) {
   return (
    <form onSubmit={handleSubmit}>
     <Stack spacing={2}>
-    <Input label="Name" name="name" value={formData.name} onChange={handleChange} />
-    <Input label="Parent No" name="parentNo" value={formData.parentNo} onChange={handleChange} />
-    <Input label="Standard" name="std" value={formData.std} onChange={handleChange} />
-    <Input label="Address" name="address" value={formData.address} onChange={handleChange} />
-    <Input label="Admission Date" name="admissionDate" type="date" value={formData.admissionDate} onChange={handleChange} />
+    <Input label="Name" name="name" value={formData.name} required onChange={handleChange} />
+    <Input label="Parent No" name="parentNo" value={formData.parentNo} required onChange={handleChange} />
+    <Input label="Standard" name="std" value={formData.std} required onChange={handleChange} />
+    <Input label="Address" name="address" value={formData.address} required  onChange={handleChange} />
+    <Input label="Admission Date" name="admissionDate" type="date" required value={formData.admissionDate} onChange={handleChange} />
     <Button type='submit' variant='contained' sx={{borderRadius:'8px'}}>{isEditMode?'Save Student':'Add Student'}</Button>
     </Stack>
    </form>
